@@ -22,6 +22,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+#include <stdio.h>
 #include "MY_CS43L22.h"
 #include <math.h>
 
@@ -46,6 +47,8 @@ I2C_HandleTypeDef hi2c1;
 
 I2S_HandleTypeDef hi2s3;
 DMA_HandleTypeDef hdma_spi3_tx;
+
+UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
 
@@ -72,7 +75,10 @@ static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_DMA_Init(void);
 static void MX_I2S3_Init(void);
+static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
+
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
 
 /* USER CODE END PFP */
 
@@ -123,6 +129,7 @@ int main(void)
   MX_I2C1_Init();
   MX_DMA_Init();
   MX_I2S3_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
 	CS43_Init(hi2c1, MODE_I2S);
@@ -131,11 +138,13 @@ int main(void)
 	CS43_Start();
 
 	//Build Sine wave
-	for(uint16_t i=0; i<sample_N; i++)
+	printf("Sine wave using (int) ((mySinVal) * 8000) & sample_N\n");
+	for(uint16_t i = 0; i < sample_N ; i++)
 	{
 		mySinVal = sinf(i*2*PI*sample_dt);
-		dataI2S[i*2] = (mySinVal )*8000;    //Right data (0 2 4 6 8 10 12)
-		dataI2S[i*2 + 1] =(mySinVal )*8000; //Left data  (1 3 5 7 9 11 13)
+		dataI2S[i*2] = (mySinVal) * 8000;    //Right data (0 2 4 6 8 10 12 ... 62)
+		dataI2S[i*2 + 1] = (mySinVal) * 8000; //Left data  (1 3 5 7 9 11 13 ... 63)
+		printf("%d %d\n", i, (int)((mySinVal) * 8000) );
 	}
 
 	HAL_I2S_Transmit_DMA(&hi2s3, (uint16_t *)dataI2S, sample_N*2);
@@ -264,6 +273,39 @@ static void MX_I2S3_Init(void)
 }
 
 /**
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART2_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART2_Init 0 */
+
+  /* USER CODE END USART2_Init 0 */
+
+  /* USER CODE BEGIN USART2_Init 1 */
+
+  /* USER CODE END USART2_Init 1 */
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 115200;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART2_Init 2 */
+
+  /* USER CODE END USART2_Init 2 */
+
+}
+
+/**
   * Enable DMA controller clock
   */
 static void MX_DMA_Init(void)
@@ -380,6 +422,14 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+PUTCHAR_PROTOTYPE {
+	/* Place your implementation of fputc here */
+	/* e.g. write a character to the LPUART1 and Loop until the end of transmission */
+	HAL_UART_Transmit(&huart2, (uint8_t*) &ch, 1, 0xFFFF);
+
+	return ch;
+}
 
 /* USER CODE END 4 */
 
