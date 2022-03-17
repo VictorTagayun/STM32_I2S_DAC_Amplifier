@@ -1,0 +1,10 @@
+STM32F407G-DISC1_I2S_CS43L22_16k
+Sine wave using (int) ((mySinVal) * 8000) & sample_N = 16kHz samplnig rate
+0 0
+1 5656
+2 8000
+3 5656
+4 0
+5 -5656
+6 -8000
+7 -5656
