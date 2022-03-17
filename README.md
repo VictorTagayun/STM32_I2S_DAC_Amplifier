@@ -4,6 +4,8 @@
 
 Learn how to intterface to a different DAC amplifier and output to it.
 
+## Step / Procedure
+
 Initialization is done thru I2C, tutorial and library came from .
 
 Data of 2kHz waveform is calculated and sent via I2S DMA.
