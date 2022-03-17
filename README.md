@@ -2,7 +2,7 @@
 
 ## Purpose of Project
 
-How to intterface to a different DAC amplifier and output to it.
+Learn how to intterface to a different DAC amplifier and output to it.
 
 Initialization is done thru I2C, tutorial and library came from .
 
