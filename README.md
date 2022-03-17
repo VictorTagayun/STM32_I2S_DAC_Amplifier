@@ -4,7 +4,7 @@
 
 Learn how to intterface to a different DAC amplifier and output to it.
 
-## Step / Procedure
+## Steps / Procedure
 
 Initialization is done thru I2C, tutorial and library came from .
 
